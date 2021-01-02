@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# This script downloads images of the day from Bing (https://www.bing.com).
+# Option: --force
+# Written by Jaewon Lee
+# I do not own the copyright of the downloaded images. Never redistribute them.
+
+jsonurl="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=7&mkt=en-US"
+
+add_label=true # set true to add label to the image
+x_padding=0; y_padding=0 # extra padding
+
+wallpaperdir="$HOME/Pictures/bing"
+historydir="$HOME/Pictures/bing/history"
+
+wallpaperfile="$wallpaperdir/bing.jpg"
+jsonfile="$wallpaperdir/bing.json"
+historyfile="$historydir/bing_history.txt"
+
+if [[ ! -d "$historydir" ]];   then mkdir -p "$historydir";   fi
+if [[ ! -d "$wallpaperdir" ]]; then mkdir -p "$wallpaperdir"; fi
+
+download() { # a function to download a file; $1= url, $2= outfile.
+  if ! curl --silent --retry 10 --retry-delay 10 --output "$2" "$1"
+  then
+    echo 'Update failed. Check the Internet connection.'
+    notify-send 'Bing Wallpaper' 'Check the Internet connection.'
+    exit 1
+  fi
+}
+
+download "$jsonurl" "$jsonfile"
+
+for i in {0..6}
+do
+  date=$(jq --raw-output ".images[$i].startdate" "$jsonfile")
+  url=$(jq --raw-output ".images[$i].url" "$jsonfile")
+  title=$(jq --raw-output ".images[$i].title" "$jsonfile")
+  copyright=$(jq --raw-output ".images[$i].copyright" "$jsonfile")
+
+  outfile="$historydir/bing_$date.jpg"
+
+  if ! [[ -e "$outfile" ]] || [[ $1 =~ -f|--force ]]
+  then
+    echo "Downloading: $date"
+    download "${url/#/http://www.bing.com}" "$outfile"
+    echo "$date; $title; $copyright" >> "$historyfile"
+
+    if [[ $i -eq 0 ]] # for today's bing image...
+    then
+      if $add_label # if "add_label" flag is on
+      then
+        # add label and save
+        convert -background '#000000C0' -fill white \
+          -font Ubuntu-Light -gravity east \
+          -pointsize 36 label:"$title" \
+          -pointsize 18 label:"$copyright" \
+          -append \
+          -compose atop -bordercolor '#000000C0' -border 16x16 \
+          miff:- \
+        | composite -gravity southeast \
+          -geometry +$((16 + $x_padding))+$((16 + $y_padding)) \
+          - "$outfile" "$wallpaperfile"
+      else
+        cp "$outfile" "$wallpaperfile" # otherwise just copy
+      fi
+      # set the desktop background (MATE-specific)
+      gsettings set org.mate.background picture-filename "$wallpaperfile"
+    fi
+  fi
+done
