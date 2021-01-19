@@ -18,7 +18,7 @@ Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
 Plug 'dense-analysis/ale'
 Plug 'deoplete-plugins/deoplete-jedi'
 Plug 'lervag/vimtex'
-Plug 'vimwiki/vimwiki'
+Plug 'j1-lee/vim-maki'
 call plug#end()
 
 " auto-pairs settings ----------------------------------------------------------
@@ -77,11 +77,16 @@ let g:UltiSnipsEditSplit           = 'vertical'
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
+" vim-maki settings ------------------------------------------------------------
+let g:maki_root = '~/Sync/wiki'
+let g:maki_journal = '~/Sync/wiki/journal'
+let g:maki_export = '~/Sync/wiki/export'
+
 " vim-startify settings --------------------------------------------------------
 let g:startify_bookmarks = [
       \ {'c': $MYVIMRC},
-      \ {'w': '~/Sync/vimwiki/index.wiki'},
-      \ {'d': '~/Sync/vimwiki/diary/diary.wiki'},
+      \ {'w': '~/Sync/wiki/index.wiki'},
+      \ {'d': '~/Sync/wiki/journal/index.wiki'},
       \ ]
 let g:startify_custom_header = []
 nmap <silent> <Leader>s :Startify<CR>
@@ -93,25 +98,6 @@ let g:vimtex_toc_config = {
       \ 'split_pos'   : 'vert rightbelow',
       \ 'split_width' : 25
       \ }
-
-" vimwiki settings -------------------------------------------------------------
-let g:vimwiki_list=[{
-      \ 'path'         : '~/Sync/vimwiki/',
-      \ 'path_html'    : '~/Sync/vimwiki/html',
-      \ 'template_path': '~/Sync/vimwiki/templates/',
-      \ 'list_margin'  : 0,
-      \ 'auto_toc'     : 1,
-      \ 'auto_export'  : 1
-      \ }]
-let g:vimwiki_global_ext       = 0       " don't treat .md as vimwiki
-let g:vimwiki_autowriteall     = 0       " no autowriting
-let g:vimwiki_toc_header_level = 2       " == Contents ==, not = Contents =
-let g:vimwiki_dir_link         = 'index' " link to dir opens index.wiki
-let g:vimwiki_table_mappings   = 0       " unmap <Tab> (reserved for ultisnips)
-" remove unwanted maps (reserved for deoplete <C-l>)
-map <Plug>NoVimwikiListToggle <Plug>VimwikiListToggle
-map <Plug>NoVimwikiListPrevSymbol <Plug>VimwikiListPrevSymbol
-map <Plug>NoVimwikiListNextSymbol <Plug>VimwikiListNextSymbol
 
 " basic ------------------------------------------------------------------------
 set encoding=utf-8 fileformats=unix,dos
@@ -201,7 +187,7 @@ augroup init_vim
   autocmd!
   autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
   autocmd FileType sh,vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
-  autocmd FileType markdown,vimwiki setlocal spell spelllang+=cjk
+  autocmd FileType markdown,wiki setlocal spell spelllang+=cjk,es
   autocmd FileType python,sh,vim,snippets,matlab setlocal colorcolumn=81,82,83
   autocmd WinEnter * set cursorline
   autocmd WinLeave * set nocursorline
