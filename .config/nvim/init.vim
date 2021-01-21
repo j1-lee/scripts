@@ -192,7 +192,7 @@ augroup init_vim
   autocmd WinEnter * set cursorline
   autocmd WinLeave * set nocursorline
   autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-        \ | exe "normal! g'\"" | endif " jump to last position when opening file
+        \ | exe 'normal! g`"' | endif " jump to last position when opening file
 augroup END
 
 " misc keymaps -----------------------------------------------------------------
