@@ -1,22 +1,8 @@
 extends tex-autotrigger
 
-snippet math "math mode" b
-{{$
-	$1
-}}$
-endsnippet
-
-snippet ali "align" b
-{{$%align%
-	$1
-}}$
-endsnippet
-
 snippet newpage "new page" b
-%title $1
-%date  `date +%Y-%m-%d`
+# ${1:`!p snip.rv = snip.basename`}
 
-= ${1:`!p snip.rv = snip.basename`} =
 $0
 endsnippet
 
