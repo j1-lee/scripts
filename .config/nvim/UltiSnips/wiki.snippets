@@ -6,10 +6,9 @@ snippet newpage "new page" b
 $0
 endsnippet
 
-snippet "\\([A-Z])\1" "mathbb" riA
-`!p snip.rv = r"\mathbb{" + match.group(1) + r"}"`
-endsnippet
-
-snippet "\\([a-z])\1" "mathcal" riA
-`!p snip.rv = r"\mathcal{" + match.group(1) + r"}"`
+snippet "\\([a-zA-Z])\1" "mathbb/mathcal" riA
+`!p
+cmd = "mathbb" if match.group(1).isupper() else "mathcal"
+snip.rv = "\\" + cmd + "{" + match.group(1).upper() + "}"
+`
 endsnippet
