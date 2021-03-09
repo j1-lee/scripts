@@ -7,6 +7,8 @@ configuration {
     terminal:         "mate-terminal";
     lines:            5;
     font:             "Ubuntu Regular 16";
+    show-icons:       true;
+    icon-theme:       "Papirus-Dark";
     kb-move-end:      "";
     kb-remove-to-eol: "";
     kb-accept-entry:  "Return,KP_Enter,Control+l";
